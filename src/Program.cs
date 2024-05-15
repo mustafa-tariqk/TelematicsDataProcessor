@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Represents the entry point of the application.
+/// </summary>
 class Program
 {
     static async Task Main(string[] args)

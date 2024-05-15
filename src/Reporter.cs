@@ -6,8 +6,17 @@ using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using static DataProcessor;
 
+/// <summary>
+/// Represents a reporter that generates reports based on vehicle data.
+/// </summary>
 class Reporter
 {
+    /// <summary>
+    /// Generates a report based on the provided <paramref name="vehicleDataStore"/>.
+    /// The report includes various metrics such as total vehicles, total drivers, average speed, average acceleration, average engine RPM, average fuel level, average brake usage, average tire pressure, average temperature, and the most common vehicle status.
+    /// </summary>
+    /// <param name="vehicleDataStore">The <see cref="VehicleDataStore"/> containing the vehicle data.</param>
+    /// <returns>A <see cref="Dictionary{TKey,TValue}"/> containing the generated report metrics.</returns>
     public Dictionary<string, string> Report(VehicleDataStore vehicleDataStore)
     {
         var metrics = new ConcurrentDictionary<string, string>();
@@ -67,6 +76,12 @@ class Reporter
         return new Dictionary<string, string>(metrics);
     }
 
+    /// <summary>
+    /// Saves the vehicle data store to a JSON file in the specified directory.
+    /// </summary>
+    /// <param name="vehicleDataStore">The vehicle data store to save.</param>
+    /// <param name="directory">The directory where the JSON file will be saved.</param>
+    /// <returns>The name of the saved JSON file.</returns>
     public string SaveToFile(VehicleDataStore vehicleDataStore, string directory)
     {
         var data = Report(vehicleDataStore);
