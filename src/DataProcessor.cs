@@ -60,9 +60,12 @@ class DataProcessor
                 VehicleStatus = parts[12]
             };
 
-            if (!dataStore.ContainsKey(vehicleData.VehicleId))
+            lock (dataStore)
             {
+                if (!dataStore.ContainsKey(vehicleData.VehicleId))
+                {
                 dataStore[vehicleData.VehicleId] = new SortedList<DateTime, VehicleData>();
+                }
             }
 
             dataStore[vehicleData.VehicleId].Add(vehicleData.Timestamp, vehicleData);
@@ -89,22 +92,18 @@ class DataProcessor
     /// Duplicate data is not sent.
     /// </summary>
     public async Task StreamingInput(string filePath)
-
     {
-        using (var reader = new StreamReader(filePath))
+        var lines = await File.ReadAllLinesAsync(filePath);
+
+        var tasks = lines.Select(line => Task.Run(() =>
         {
-            string line;
-            while ((line = await reader.ReadLineAsync()) != null)
-            {
-                // Parse the line into a VehicleData object
-                vehicleDataStore.Add(line);
+            vehicleDataStore.Add(line);
 
+            int delay = _random.Next(300, 601);
+            Task.Delay(delay).Wait();
+        }));
 
-                // getting data on the other side of the planet is approx 300ms, extra for some processing time.
-                int delay = _random.Next(300, 601);
-                await Task.Delay(delay);
-            }
-        }
+        await Task.WhenAll(tasks);
     }
 
 }

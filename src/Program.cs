@@ -21,7 +21,6 @@ class Program
             string command = Console.ReadLine();
             if (command != "r")
             {
-                await live;
                 break;
             }
             else 
