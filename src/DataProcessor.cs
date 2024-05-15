@@ -31,7 +31,7 @@ class DataProcessor
 
     public class VehicleDataStore
     {
-        private Dictionary<int, SortedList<DateTime, VehicleData>> dataStore;
+        public Dictionary<int, SortedList<DateTime, VehicleData>> dataStore;
 
         public VehicleDataStore()
         {
