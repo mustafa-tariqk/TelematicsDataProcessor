@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 // Data column info: timestamp,vehicle_id,driver_id,latitude,longitude,speed,acceleration,engine_rpm,fuel_level,brake_usage,tire_pressure,temperature,vehicle_status
 
 
@@ -31,11 +33,11 @@ class DataProcessor
 
     public class VehicleDataStore
     {
-        public Dictionary<int, SortedList<DateTime, VehicleData>> dataStore;
+        public ConcurrentDictionary<int, ConcurrentDictionary<DateTime, VehicleData>> dataStore;
 
         public VehicleDataStore()
         {
-            dataStore = new Dictionary<int, SortedList<DateTime, VehicleData>>();
+            dataStore = new ConcurrentDictionary<int, ConcurrentDictionary<DateTime, VehicleData>>();
         }
 
         public void Add(string dataLine)
@@ -60,22 +62,16 @@ class DataProcessor
                 VehicleStatus = parts[12]
             };
 
-            lock (dataStore)
-            {
-                if (!dataStore.ContainsKey(vehicleData.VehicleId))
-                {
-                dataStore[vehicleData.VehicleId] = new SortedList<DateTime, VehicleData>();
-                }
-            }
-
-            dataStore[vehicleData.VehicleId].Add(vehicleData.Timestamp, vehicleData);
+            dataStore.AddOrUpdate(vehicleData.VehicleId, 
+            new ConcurrentDictionary<DateTime, VehicleData> { [vehicleData.Timestamp] = vehicleData }, 
+            (key, existingValue) => { existingValue[vehicleData.Timestamp] = vehicleData; return existingValue; });
         }
 
         public SortedList<DateTime, VehicleData> Get(int vehicleId)
         {
             if (dataStore.ContainsKey(vehicleId))
             {
-                return dataStore[vehicleId];
+                return new SortedList<DateTime, VehicleData>(dataStore[vehicleId]);
             }
 
             return null;
@@ -92,18 +88,22 @@ class DataProcessor
     /// Duplicate data is not sent.
     /// </summary>
     public async Task StreamingInput(string filePath)
+
     {
-        var lines = await File.ReadAllLinesAsync(filePath);
-
-        var tasks = lines.Select(line => Task.Run(() =>
+        using (var reader = new StreamReader(filePath))
         {
-            vehicleDataStore.Add(line);
+            string line;
+            while ((line = await reader.ReadLineAsync()) != null)
+            {
+                // Parse the line into a VehicleData object
+                vehicleDataStore.Add(line);
 
-            int delay = _random.Next(300, 601);
-            Task.Delay(delay).Wait();
-        }));
 
-        await Task.WhenAll(tasks);
+                // getting data on the other side of the planet is approx 300ms, extra for some processing time.
+                int delay = _random.Next(300, 601);
+                await Task.Delay(delay);
+            }
+        }
     }
 
 }
