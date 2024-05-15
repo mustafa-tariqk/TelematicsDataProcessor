@@ -9,7 +9,7 @@ using static DataProcessor;
 /// <summary>
 /// Represents a reporter that generates reports based on vehicle data.
 /// </summary>
-class Reporter
+public class Reporter
 {
     /// <summary>
     /// Generates a report based on the provided <paramref name="vehicleDataStore"/>.
@@ -71,7 +71,14 @@ class Reporter
         metrics["AverageBrakeUsage"] = (totalBrakeUsage / dataPoints).ToString();
         metrics["AverageTirePressure"] = (totalTirePressure / dataPoints).ToString();
         metrics["AverageTemperature"] = (totalTemperature / dataPoints).ToString();
-        metrics["MostCommonVehicleStatus"] = vehicleStatusCounts.OrderByDescending(v => v.Value).First().Key;
+        if (vehicleStatusCounts.Any())
+        {
+            metrics["MostCommonVehicleStatus"] = vehicleStatusCounts.OrderByDescending(v => v.Value).First().Key;
+        }
+        else
+        {
+            metrics = new ConcurrentDictionary<string, string>();
+        }
 
         return new Dictionary<string, string>(metrics);
     }

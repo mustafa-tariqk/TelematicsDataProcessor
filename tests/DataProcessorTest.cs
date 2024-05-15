@@ -1,8 +1,9 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
-namespace YourNamespace.Tests
+namespace TelematicsDataProcessor.Tests
 {
     [TestFixture]
     public class DataProcessorTests
@@ -22,7 +23,7 @@ namespace YourNamespace.Tests
         public void Add_ValidDataLine_ShouldAddDataToDataStore()
         {
             // Arrange
-            string dataLine = "2022-01-01-12-00-00,1,1,37.7749,-122.4194,60,5,3000,80,20,32,25,Running";
+            string dataLine = "2022-01-01-12-00-00,1,1,37.7749,-122.4194,60,5,3000,80,20,32,25,In Motion";
 
             // Act
             _dataProcessor.vehicleDataStore.Add(dataLine);
@@ -43,14 +44,14 @@ namespace YourNamespace.Tests
             _dataStore.dataStore[1].TryAdd(DateTime.ParseExact("2022-01-01-12-02-00", "yyyy-MM-dd-HH-mm-ss", null), new DataProcessor.VehicleData { VehicleId = 1 });
 
             // Act
-            var result = _dataProcessor.Get(1);
+            var result = _dataProcessor.vehicleDataStore.Get(1);
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Count);
-            Assert.AreEqual(1, result[0].VehicleId);
-            Assert.AreEqual(1, result[1].VehicleId);
-            Assert.AreEqual(1, result[2].VehicleId);
+            Assert.AreEqual(1, result.Values[0].VehicleId);
+            Assert.AreEqual(1, result.Values[1].VehicleId);
+            Assert.AreEqual(1, result.Values[2].VehicleId);
         }
 
         [Test]
@@ -60,7 +61,7 @@ namespace YourNamespace.Tests
             _dataStore.dataStore.TryAdd(1, new ConcurrentDictionary<DateTime, DataProcessor.VehicleData>());
 
             // Act
-            var result = _dataProcessor.Get(2);
+            var result = _dataProcessor.vehicleDataStore.Get(2);
 
             // Assert
             Assert.IsNull(result);

@@ -1,48 +1,27 @@
-**Project Idea:** "Telematics Data Processor"
+# Telematics Data Processor
 
-Create a simple console application in .NET Core that processes telematics data (e.g., vehicle location, speed, acceleration) and generates reports on
-performance metrics. The app should have the following features:
+This project is a .NET application that processes telematics data. I'm writing this to show some level of competency in programming. I didn't know .NET a couple hours ago. Now I do. There is some light paralaellization with some multithreading but nothing too intense. I am hoping this does enough to get my foot in the door. I'm also writing up a blog about this and how I went through it. Check it out here: https://mustafa-tariqk.github.io/jekyll/update/2024/05/14/Hello-Geotab.html
 
-1. **Data Processing**: Read CSV files containing telematics data and process it to extract relevant information.
-2. **Reporting**: Generate simple reports (e.g., HTML or CSV files) that display performance metrics such as average speed, acceleration, and
-location-based statistics.
-3. **Automated Testing**: Write unit tests using a testing framework like NUnit or xUnit to verify the correctness of the data processing and reporting
-functions.
+## Project Structure
 
-**Project File Structure:**
+- `src/`: Contains the source code for the application.
+  - `DataProcessor.cs`: The main data processing logic.
+  - `Program.cs`: The entry point for the application.
+  - `Reporter.cs`: Handles reporting of the processed data.
+- `tests/`: Contains the unit tests for the application.
+- `.gitignore`: Specifies which files and directories to ignore in Git.
 
-Create the following folders and files:
+## Building the Project
 
-* `TelematicsDataProcessor` (root folder)
-	+ `src` (source code folder)
-		- `TelematicsDataProcessor.csproj` (project file for .NET Core)
-		- `Program.cs` (entry point for the console app)
-		- `DataProcessor.cs` (data processing logic)
-		- `Reporter.cs` (reporting logic)
-	+ `tests` (testing folder)
-		- `TelematicsDataProcessor.Tests.csproj` (project file for unit tests)
-		- `Tests.cs` (unit test class)
+To build the project, navigate to src and use the .NET CLI:
 
-**How to Complete the Project:**
-
-1. Set up a new .NET Core console application project using your preferred IDE or the command line.
-2. Implement the data processing logic in `DataProcessor.cs`. This will involve reading CSV files, parsing the data, and storing it in a suitable data
-structure (e.g., a list of objects).
-3. Create a simple reporting function in `Reporter.cs` that generates reports based on the processed data. You can use libraries like EPPlus or
-CsvHelper to generate reports.
-4. Write unit tests for the data processing and reporting functions using NUnit or xUnit. These tests should verify the correctness of the processed
-data and generated reports.
-5. Implement automated testing by writing test methods in a separate file (e.g., `Tests.cs`) that cover various scenarios, such as:
-	* Validating the processed data against expected results
-	* Verifying the report generation for different input data
-6. Run your unit tests to ensure they pass.
-
-**Tips and Considerations:**
-
-* Keep your project simple and focused on showcasing your skills in automated testing and CI/CD pipeline management.
-* Use a simple console application as the basis for your project, rather than trying to create a full-fledged web-based platform.
-* Consider using a CI/CD tool like Azure DevOps or Jenkins to automate your testing and deployment processes.
-* Make sure to include a README file in your project that explains how to run the tests and any dependencies required.
-
-By completing this project, you'll demonstrate your skills in automated testing, data processing, and reporting, making it a great fit for the job
-description. Good luck with your application!
+```
+dotnet build
+dotnet run
+```
+## Running the Tests
+To run the tests, navigate to tests and use the .NET CLI:
+```
+dotnet build
+dotnet test
+```

@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace YourNamespace.Tests
+namespace TelematicsDataProcessor.Tests
 {
     [TestFixture]
     public class ReporterTests
@@ -21,6 +21,7 @@ namespace YourNamespace.Tests
         public void Report_EmptyDataStore_ShouldReturnEmptyMetrics()
         {
             // Arrange
+            _dataStore.dataStore = new ConcurrentDictionary<int, ConcurrentDictionary<System.DateTime, DataProcessor.VehicleData>>();
 
             // Act
             var result = _reporter.Report(_dataStore);
@@ -87,7 +88,7 @@ namespace YourNamespace.Tests
             };
             _dataStore.dataStore.TryAdd(1, new ConcurrentDictionary<System.DateTime, DataProcessor.VehicleData>());
             _dataStore.dataStore[1].TryAdd(System.DateTime.Now, vehicleData);
-            string directory = "/path/to/directory";
+            string directory = ".";
 
             // Act
             var result = _reporter.SaveToFile(_dataStore, directory);

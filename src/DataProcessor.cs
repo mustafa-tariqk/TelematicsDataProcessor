@@ -11,9 +11,9 @@ using System.Collections.Concurrent;
 /// <summary>
 /// Represents a data processor for handling vehicle data.
 /// </summary>
-class DataProcessor
+public class DataProcessor
 {
-    private static readonly Random _random = new Random(); // simulate random delay
+    public static readonly Random _random = new Random(); // simulate random delay
     public VehicleDataStore vehicleDataStore = new VehicleDataStore();
 
     /// <summary>
@@ -46,7 +46,7 @@ class DataProcessor
         /// <summary>
         /// Initializes a new instance of the <see cref="VehicleDataStore"/> class.
         /// </summary>
-        /// public VehicleDataStore()
+        public VehicleDataStore()
         {
             dataStore = new ConcurrentDictionary<int, ConcurrentDictionary<DateTime, VehicleData>>();
         }
